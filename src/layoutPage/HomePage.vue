@@ -19,6 +19,7 @@ export default {
       }
   },
   mounted(){
+    console.log("wuh")
       this.$router.replace({
           name:'myinfo'
       })
