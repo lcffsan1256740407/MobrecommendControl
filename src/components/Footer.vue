@@ -13,7 +13,7 @@ export default {
   name: "Footer",
   data() {
     return {
-      active: 2,
+      active: 1,
     };
   },
   methods: {
@@ -24,7 +24,7 @@ export default {
     },
     goToList() {
       this.$router.replace({
-        name: "list",
+        name: "showlist",
       });
     },
     goToMyInfo() {

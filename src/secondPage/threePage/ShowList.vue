@@ -1,56 +1,112 @@
 <template>
   <div>
-    <van-search v-model="keywords" placeholder="请输入搜索关键词" />
+    <!-- 搜索框 -->
+    <van-search
+      v-model="keywords"
+      placeholder="请输入搜索关键词"
+      @input="searchFn"
+    />
 
-    <van-card price="2.00" desc="描述信息" title="达尔文5号">
+    <!-- 列表展示区域 -->
+    <van-card
+      :price="item.premium"
+      :desc="`保额:${item.coverage}元`"
+      :title="item.insuranceName"
+      v-for="(item, index) of listArray"
+      :key="index"
+    >
       <template #tags>
-        <van-tag plain type="danger">姓名</van-tag>
-        <van-tag plain type="danger">性别</van-tag>
+        <van-tag plain type="danger">{{ item.applicantName }}</van-tag>
+        <van-tag plain type="danger">{{ item.applicantMale }}</van-tag>
       </template>
       <template #footer>
-        <van-button size="mini">编辑</van-button>
-        <van-button size="mini">删除</van-button>
-      </template>
-    </van-card>
-    <van-card price="2.00" desc="描述信息" title="达尔文5号">
-      <template #tags>
-        <van-tag plain type="danger">姓名</van-tag>
-        <van-tag plain type="danger">性别</van-tag>
-      </template>
-      <template #footer>
-        <van-button size="mini">编辑</van-button>
-        <van-button size="mini">删除</van-button>
-      </template>
-    </van-card>
-    <van-card price="2.00" desc="描述信息" title="达尔文5号">
-      <template #tags>
-        <van-tag plain type="danger">姓名</van-tag>
-        <van-tag plain type="danger">性别</van-tag>
-      </template>
-      <template #footer>
-        <van-button size="mini">编辑</van-button>
-        <van-button size="mini">删除</van-button>
+        <van-button type="warning" size="mini" @click="handleComplete(item.id)" v-show="item.proposalState == 1">完善</van-button>
+        <van-button type="info" size="mini" @click="handleEdit(item.id)" v-show="item.proposalState == 2">编辑</van-button>
+        <van-button type="danger" size="mini" @click="handleDelete(item.id)">删除</van-button>
       </template>
     </van-card>
 
-    <div class="add">+</div>
+    <!-- 添加按钮 -->
+    <div class="add" @click="handleAdd">+</div>
 
     <van-pagination
       v-model="currentPage"
-      :total-items="24"
+      :total-items="total"
       :items-per-page="5"
+      @change="change"
     />
   </div>
 </template>
 
 <script>
+import { bookListRequest , deleteRequest } from "../../requestFn";
+
 export default {
   name: "ShowList",
   data() {
     return {
       keywords: "",
       currentPage: 1,
+      listArray: [],
+      total: "",
     };
+  },
+  methods: {
+    // 搜索
+    searchFn() {
+      this.currentPage = 1;
+      this.change();
+    },
+    // 切换页码
+    change() {
+      bookListRequest(this.currentPage, this.keywords).then((res) => {
+        this.total = res.content.total;
+        this.listArray = res.content.list;
+        this.listArray.forEach((item) => {
+          item.applicantMale = item.applicantMale == 1 ? "男" : "女";
+        });
+      });
+    },
+    // 删除
+    handleDelete(id) {
+      deleteRequest(id).then((res) => {
+        this.change();
+      });
+    },
+    // 添加
+    handleAdd(){
+      this.$router.replace({
+        name:'add'
+      })
+    },
+    // 完善
+    handleComplete(id){
+      this.$router.replace({
+        name:'complete',
+        query:{
+          id
+        }
+      })
+    },
+    // 编辑
+    handleEdit(id){
+      this.$router.replace({
+        name:'editdetail',
+        query:{
+          id
+        }
+      })
+    }
+  },
+  mounted() {
+    // 查询建议书列表第一页(默认设置成一页最多5条)
+    bookListRequest(1).then((res) => {
+      this.total = res.content.total;
+      this.listArray = res.content.list;
+      this.listArray.forEach((item) => {
+        item.applicantMale = item.applicantMale == 1 ? "男" : "女";
+      });
+    });
   },
 };
 </script>
@@ -77,10 +133,5 @@ export default {
   font-size: 30px;
   color: silver;
   border-radius: 5px;
-  transition: 0.25s;
-}
-.add:active {
-  background-color: silver;
-  color: white;
 }
 </style>

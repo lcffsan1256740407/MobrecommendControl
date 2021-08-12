@@ -59,13 +59,23 @@ export default {
   methods: {
     onSubmit() {
       loginRequest(this.username, this.password).then((res) => {
-        if(res.code == -1){
-          this.$toast({ message: "账号或密码错误", icon: "https://s1.aigei.com/src/img/gif/d3/d3869054b6b7466ab42389e195aff14c.gif?imageMogr2/auto-orient/thumbnail/!149x149r/gravity/Center/crop/149x149/quality/85/&e=1735488000&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:Ic-9Plm9qkIik4OrlZ5oWllzi7w=",});
-        }else{
-          this.$toast({ message: "登录成功", icon: "https://s1.aigei.com/src/img/gif/16/16ff1a54523d4b209507fe571d5d5865.gif?imageMogr2/auto-orient/thumbnail/!149x149r/gravity/Center/crop/149x149/quality/85/&e=1735488000&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:7dj1zpvtUaNxvvZnF4jzjv9kFZ0=",});
+        if (res.code == -1) {
+          this.$toast({
+            message: "账号或密码错误",
+            icon: "https://s1.aigei.com/src/img/gif/d3/d3869054b6b7466ab42389e195aff14c.gif?imageMogr2/auto-orient/thumbnail/!149x149r/gravity/Center/crop/149x149/quality/85/&e=1735488000&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:Ic-9Plm9qkIik4OrlZ5oWllzi7w=",
+          });
+        } else {
+          //存储token
+          localStorage.setItem("token", res.content.token);
+          //存储用户名
+          localStorage.setItem("username", this.username);
+          this.$toast({
+            message: "登录成功",
+            icon: "https://s1.aigei.com/src/img/gif/16/16ff1a54523d4b209507fe571d5d5865.gif?imageMogr2/auto-orient/thumbnail/!149x149r/gravity/Center/crop/149x149/quality/85/&e=1735488000&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:7dj1zpvtUaNxvvZnF4jzjv9kFZ0=",
+          });
           this.$router.replace({
-            name:'home'
-          })
+            name: "home",
+          });
         }
       });
     },

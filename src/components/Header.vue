@@ -14,7 +14,7 @@ export default {
   methods: {
     onClickLeft() {
       this.$router.replace({
-        name: "list",
+        name: "showlist",
       });
     },
   },

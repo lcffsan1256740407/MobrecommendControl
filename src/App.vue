@@ -10,7 +10,7 @@ export default {
   name: 'App',
   mounted(){
     this.$router.replace({
-      name:'showlist'
+      name:'login'
     })
   }
 }
