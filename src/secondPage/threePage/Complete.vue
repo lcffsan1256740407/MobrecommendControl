@@ -240,7 +240,7 @@ export default {
             });
           });
         } else {
-            alert("请至少填写一名被保人")
+            this.$toast("至少填写一名被保人")
         }
     },
   },

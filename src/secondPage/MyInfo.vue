@@ -6,29 +6,30 @@
         <img src="../imgs/myinfo.jpg" alt="" />
         <div class="header-msg">
           <div>
-            <span style="color: #fd4478">AcFun用户</span>
+            <span style="color: #fd4478">AcFun用户 : {{ name }}</span>
           </div>
           <div>年度大会员</div>
           <div>
             <span>A币: 0.0</span>
             <span>硬币: 125</span>
+            <span class="quit" @click="quit">退出登录 > </span>
           </div>
         </div>
       </div>
       <!-- 动态数据区域 -->
       <div class="header-other">
         <div>
-          <span>2</span>
+          <span>{{ total }}</span>
           <span class="tag">总数据</span>
         </div>
         <span class="line"></span>
         <div>
-          <span>106</span>
+          <span>{{ total - over }}</span>
           <span class="tag">待完善</span>
         </div>
         <span class="line"></span>
         <div>
-          <span>200</span>
+          <span>{{ over }}</span>
           <span class="tag">可编辑</span>
         </div>
       </div>
@@ -44,12 +45,45 @@
 </template>
 
 <script>
+import { bookListRequest } from "../requestFn";
 export default {
   name: "MyInfo",
+  data() {
+    return {
+      total: "",
+      over: "",
+      name: "",
+    };
+  },
+  methods: {
+    quit(){
+      this.$router.replace({
+        name:'login'
+      })
+      localStorage.clear()
+    }
+  },
+  mounted() {
+    // 查询建议书列表第一页(默认设置成一页最多5条)
+    bookListRequest(1).then((res) => {
+      this.total = res.content.total;
+
+      this.over = res.content.list.filter((item) => {
+        return item.proposalState == 2;
+      }).length;
+
+      this.name = localStorage.getItem("username");
+    });
+  },
 };
 </script>
 
 <style scoped>
+.quit {
+  cursor: pointer;
+  position: absolute;
+  right: 25px;
+}
 .header {
   padding-top: 25px;
   height: 200px;
@@ -119,7 +153,7 @@ export default {
   height: 20px;
   background-color: silver;
 }
-.main{
-    margin-top: 50px;
+.main {
+  margin-top: 50px;
 }
 </style>

@@ -73,6 +73,7 @@ export default {
             message: "登录成功",
             icon: "https://s1.aigei.com/src/img/gif/16/16ff1a54523d4b209507fe571d5d5865.gif?imageMogr2/auto-orient/thumbnail/!149x149r/gravity/Center/crop/149x149/quality/85/&e=1735488000&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:7dj1zpvtUaNxvvZnF4jzjv9kFZ0=",
           });
+
           this.$router.replace({
             name: "home",
           });
@@ -94,9 +95,9 @@ export default {
 }
 .login-content {
   width: 300px;
-  height: 550px;
+  height: 450px;
   padding: 0 20px;
-  border-radius: 5px;
+  border-radius: 15px;
   display: flex;
   flex-direction: column;
   justify-content: start;

@@ -12,7 +12,12 @@
         <!-- 选择保额 -->
         <div class="coverage">
           <span>保额:</span>
-          <van-radio-group v-model="proposal.coverage" direction="horizontal" @change="chocieMoney">
+          <van-radio-group
+            v-if="proposal.coverage"
+            v-model="proposal.coverage"
+            direction="horizontal"
+            @change="chocieMoney"
+          >
             <van-radio
               :name="item.coverage"
               shape="square"
@@ -27,7 +32,7 @@
         <!-- 展示保费 -->
         <div class="premium">
           <span>保费:</span>
-          <input type="text" disabled :value="`${arry[0].premium} 元`" />
+          <input v-if="arry[0].premium" type="text" disabled :value="`${arry[0].premium} 元`" />
         </div>
       </div>
       <!-- 投保人 -->
@@ -174,19 +179,26 @@
           </div>
         </van-popup>
       </div>
+
+      <!-- 提交按钮 -->
+      <div style="margin: 16px">
+        <van-button round block type="info" native-type="submit"
+          >提交</van-button
+        >
+      </div>
     </van-form>
   </div>
 </template>
 
 <script>
-import { detailRequest, moneyRequest } from "../../requestFn";
+import { detailRequest, moneyRequest , saveAllRequest } from "../../requestFn";
 
 export default {
   name: "EditDetail",
   data() {
     return {
       // 投保人信息
-      proposal: [],
+      proposal: { coverage: "", premium: "" },
       //   被投保人信息
       proposalInsureds: [],
       //   保额
@@ -202,7 +214,6 @@ export default {
         insuredMale: 1,
         insuredIdNo: "",
       },
-      listArry: [],
     };
   },
   methods: {
@@ -230,7 +241,7 @@ export default {
     handleAdd() {
       if (this.isName && this.isNumber) {
         this.show = false;
-        this.listArry.push({
+        this.proposalInsureds.push({
           insuredName: this.addData.insuredName,
           insuredMale: this.addData.insuredMale,
           insuredIdNo: this.addData.insuredIdNo,
@@ -240,7 +251,7 @@ export default {
     },
     // 删除item按钮
     itemDelete(index) {
-      this.listArry.splice(index, 1);
+      this.proposalInsureds.splice(index, 1);
     },
     // 保存item按钮
     itemSave(item) {
@@ -278,7 +289,21 @@ export default {
       return false;
     },
     // 保存修改详情页信息
-    go() {},
+    go() {
+      if (this.proposalInsureds.length == 0) {
+        this.$toast("至少有一名被保人")
+      } else {
+        // 发送修改建议书请求
+        this.proposalInsureds.forEach((item) => {
+          delete item.id;
+        });
+        saveAllRequest(this.proposal, this.proposalInsureds).then((res) => {
+          this.$router.replace({
+            name: "showlist",
+          });
+        });
+      }
+    },
   },
   mounted() {
     detailRequest(this.$route.query.id).then((res) => {
@@ -303,6 +328,8 @@ export default {
         this.arry = arry;
       });
     });
+
+    
   },
 };
 </script>

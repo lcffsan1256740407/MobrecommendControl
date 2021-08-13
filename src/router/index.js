@@ -23,61 +23,89 @@ let router = new VueRouter({
         {
             name: 'login',
             path: '/login',
-            component: LoginPage
+            component: LoginPage,
+            meta: { isAuth: false }
         },
         // 主页面
         {
             name: 'home',
             path: '/home',
             component: HomePage,
+            meta: { isAuth: true },
             children: [
                 {
                     //频道
                     name: 'channel',
                     path: 'channel',
                     component: Channel,
+                    meta: { isAuth: true },
                 },
                 {
                     //我的
                     name: 'myinfo',
                     path: 'myinfo',
                     component: MyInfo,
+                    meta: { isAuth: true },
                 },
                 {
                     //建议书列表页面
                     name: 'list',
                     path: 'list',
                     component: List,
-                    children:[
+                    meta: { isAuth: true },
+                    children: [
                         {
                             //展示列表页
-                            name:'showlist',
-                            path:'showlist',
-                            component: ShowList
+                            name: 'showlist',
+                            path: 'showlist',
+                            component: ShowList,
+                            meta: { isAuth: true },
                         },
                         {
                             //展示添加页
-                            name:'add',
-                            path:'add',
-                            component: Add
+                            name: 'add',
+                            path: 'add',
+                            component: Add,
+                            meta: { isAuth: true },
                         },
                         {
                             //展示完善页
-                            name:'complete',
-                            path:'complete',
-                            component: Complete
+                            name: 'complete',
+                            path: 'complete',
+                            component: Complete,
+                            meta: { isAuth: true },
                         },
                         {
                             //展示详情页
-                            name:'editdetail',
-                            path:'editdetail',
-                            component: EditDetail
+                            name: 'editdetail',
+                            path: 'editdetail',
+                            component: EditDetail,
+                            meta: { isAuth: true },
                         },
                     ]
                 }
             ]
+        },
+        //跳转到404页面
+        {
+            path: '*',
+            component: () => import("../layoutPage/Error404"),
+            hidden: true
         }
     ]
+})
+
+// 全局前置路由守卫做权限限制
+router.beforeEach((to, from, next) => {
+    if (to.meta.isAuth == true) {
+        if (localStorage.getItem("token") == null) {
+            alert("没有权限访问")
+        } else {
+            next()
+        }
+    } else {
+        next()
+    }
 })
 
 

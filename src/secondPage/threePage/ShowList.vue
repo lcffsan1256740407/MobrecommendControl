@@ -70,6 +70,10 @@ export default {
     // 删除
     handleDelete(id) {
       deleteRequest(id).then((res) => {
+        if(this.listArray.length == 1){
+          // 删除自动跳到第一页
+          this.currentPage = 1;
+        }
         this.change();
       });
     },

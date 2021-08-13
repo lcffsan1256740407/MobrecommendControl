@@ -82,7 +82,7 @@ export default {
               });
             });
         }else{
-            alert("请先选择险种")
+            this.$toast("请选择险种")
         }
     },
   },
